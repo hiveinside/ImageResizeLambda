@@ -22,7 +22,7 @@ AKCtl.init = function () {
 
     this.pg.spread(function(client, done) {
         var query = client.query({
-            text: "select img_hdpi from feeds order by id desc limit 2",
+            text: "select img_hdpi from feeds order by id desc limit 1000",
             buffer: true //if set to true, adds all the rows to the result object available on the rows property on the promise resolve value
         }).promise.then(
             function(result) {
