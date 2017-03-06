@@ -1,0 +1,32 @@
+{
+  "name": "image_downloader_js",
+  "version": "1.0.0",
+  "description": "Download Image from URL and Store it.",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ImageDownloaderJS"
+  },
+  "keywords": [
+    "image",
+    "download"
+  ],
+  "dependencies": {
+    "async-parallel": "1.0.7",
+    "aws-sdk": "2.22.0",
+    "base64-img": "^1.0.3",
+    "md5": "2.2.1",
+    "node-fs": "0.1.7",
+    "pg": "^6.1.2",
+    "promise-pg": "^0.1.1",
+    "request": "2.79.0",
+    "s3-write-stream": "0.0.1",
+    "sharp": "0.17.2",
+    "stream-collect": "^1.3.1"
+  },
+  "author": "Abhijit Kumar",
+  "license": "ISC"
+}
