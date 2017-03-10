@@ -6,7 +6,7 @@ var  request = require('request'),
     async_parallel = require('async-parallel'),
     query = require("pg-query");
 
-var AKCtl = {baseURL:function(url){return "https://53unhwyitj.execute-api.us-east-1.amazonaws.com/prod/ImageDownloaderViaNodeJS?imageurl="+url}};
+var AKCtl = {baseURL:function(url){return "https://53unhwyitj.execute-api.us-east-1.amazonaws.com/prod/ImageDownloaderViaNodeJS?imageurl="+url,imageResizeBaseUrl='http://lavaimagerepo.s3-website-us-west-2.amazonaws.com'}};
 
 
 AKCtl.configApp = function (CONFIG) {
@@ -31,7 +31,7 @@ AKCtl.init = function () {
             return false;
         }
 
-        query('select id,img_hdpi from feeds where id>'+rows[0].feed_id+'order by id asc', function(err, rows) {
+        query('select id,img_hdpi,template from feeds where id>'+rows[0].feed_id+'order by id asc', function(err, rows) {
 
             async_parallel.concurrency = 100;
 
@@ -42,6 +42,23 @@ AKCtl.init = function () {
                 request(imageEncodedURL, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
                         console.log(body);
+
+                        imagenameArr=row.img_hdpi.split('\/');
+                        imagename=imagenameArr[imagenameArr.length-1];
+
+                         if(template=='fullcard')   
+                           {url=imageResizeBaseUrl+'/0x168/'+imagename;}     
+
+                        else{
+                            url=imageResizeBaseUrl+'/112x114/'+imagename;
+                        }
+
+                     request(url, function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+                            console.log(body);
+                        }
+
+
                     }
                 });
 
