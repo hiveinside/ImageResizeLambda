@@ -6,14 +6,14 @@ var URL = process.env.URL;
 
 exports.handler = function(event, context) {
   var key = event.queryStringParameters.key;
-  var match = key.match(/(\d+)x(\d+)\/(.*)/);
+  var match = key.match(/(\d+)\/(.*)/);
   var width = parseInt(match[1], 10);
-  var height = parseInt(match[2], 10);
-  var originalKey = match[3];
+  // var height = parseInt(match[2], 10);
+  var originalKey = match[2];
 
   S3.getObject({Bucket: BUCKET, Key: originalKey}).promise()
     .then((data) => Sharp(data.Body)
-        .resize(width, height)
+        .resize(width)
         .toFormat('webp')
         .toBuffer()
     )
