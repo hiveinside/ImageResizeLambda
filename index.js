@@ -12,3 +12,4 @@ exports.handler = function index(event, context) {
         "DATABASE": process.env.DATABASE
     }).init();
 };
+	
