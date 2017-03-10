@@ -6,14 +6,16 @@ var URL = process.env.URL;
 
 exports.handler = function(event, context) {
   var key = event.queryStringParameters.key;
-  var match = key.match(/(\d+)\/(.*)/);
-  var width = parseInt(match[1], 10);
-  // var height = parseInt(match[2], 10);
-  var originalKey = match[2];
+  var match = key.match(/(\d+)x(\d+)\/(.*)/);
+  var width = (parseInt(match[1], 10)!=0)?parseInt(match[1], 10):null;
+  var height = (parseInt(match[2], 10)!=0)?parseInt(match[2], 10):null;
+  var originalKey = match[3];
+
+  console.log(originalKey,key,match,width,height);
 
   S3.getObject({Bucket: BUCKET, Key: originalKey}).promise()
     .then((data) => Sharp(data.Body)
-        .resize(width)
+        .resize(width, height)
         .toFormat('webp')
         .toBuffer()
     )
@@ -30,9 +32,5 @@ exports.handler = function(event, context) {
         body: ''
       })
     )
-    .catch((err) => context.fail(JSON.stringify({
-        statusCode: '404'
-        /*headers: {'location': `${URL}/${key}`},
-        body: ''*/
-      })))
+    .catch((err) => context.fail(err))
 }
