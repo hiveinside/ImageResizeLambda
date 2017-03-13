@@ -4,6 +4,7 @@ var AKCtl = require("./App/AKCtl");
 
 
 
+
 exports.handler = function index(event, context) {
     AKCtl.configApp({
         "HOST": process.env.HOST,
@@ -12,4 +13,6 @@ exports.handler = function index(event, context) {
         "DATABASE": process.env.DATABASE
     }).init();
 };
+
+
 	

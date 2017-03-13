@@ -55,7 +55,7 @@ AKCtl.init = function () {
                         }     
 
                         else{
-                            url=AKCtl.imageResizeBaseUrl+'/112x114/'+imagename;
+                            url=AKCtl.imageResizeBaseUrl+'/224x228/'+imagename;
                         }
 
                      request(url, function (error, response, body) {
