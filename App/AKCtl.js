@@ -11,6 +11,7 @@ var AKCtl = {baseURL:function(url){return "https://53unhwyitj.execute-api.us-eas
 
 AKCtl.configApp = function (CONFIG) {
     query.connectionParameters=("postgres://"+CONFIG.USERNAME+":"+CONFIG.PASSWORD+"@"+CONFIG.HOST+":5432/"+CONFIG.DATABASE);
+    //query.connectionParameters=("postgres://"+"test"+":"+"Hive2013"+"@"+"hivelauncherrds2.ciw9asb47tat.us-east-1.rds.amazonaws.com"+":5432/"+"lancherbackend");
     return this;
 };
 
@@ -20,7 +21,31 @@ AKCtl.configApp = function (CONFIG) {
  */
 AKCtl.init = function () {
     var feed_id=null;
+    var counter;
+    var image_size_arr={
+        
+        "fullcard":["168","336","504"],
+        "halfcard":["112x114","224x228","336x342"]
+    };
+    
 
+    query('select cardtype, width, height from imagesizes',function(err,rows){
+
+        try{
+            for(counter in rows){    
+                
+                if(rows[counter].cardtype=='fullcard'){
+                    image_size_arr.fullcard.push(rows[counter].height);
+                }else{
+                    image_size_arr.halfcard.push(rows[counter].width+'x'+rows[counter].height);
+                }
+            }
+
+        }catch(err){
+            console.log(err);
+            return false;
+        }
+    });
 
 
     query('select * from lambdaconfig', function(err, rows) {
@@ -49,25 +74,38 @@ AKCtl.init = function () {
                         imagenameArr=row.img_hdpi.split('\/');
                         imagename=imagenameArr[imagenameArr.length-1];
 
+                        var size;
+
                          if(row.template=='fullcard')   
                            {
-                            url=AKCtl.imageResizeBaseUrl+'/0x168/'+imagename;
+
+                            for(size in image_size_arr.fullcard){
+                                
+                                url=AKCtl.imageResizeBaseUrl+'/0x'+image_size_arr.fullcard[size]+'/'+imagename;
+
+                                request(url, function (error, response, body) {
+                                    if (!error && response.statusCode == 200) {
+                                        console.log('Its working '+url);
+                                    }
+                                });
+                            }
                         }     
 
                         else{
-                            url=AKCtl.imageResizeBaseUrl+'/224x228/'+imagename;
+                         
+                            for(size in image_size_arr.halfcard){
+                                
+                                url=AKCtl.imageResizeBaseUrl+'/'+image_size_arr.halfcard[size]+'/'+imagename;
+
+                                request(url, function (error, response, body) {
+                                    if (!error && response.statusCode == 200) {
+                                        console.log('Its working '+url);
+                                    }
+                                });
+                            }
                         }
 
-                     request(url, function (error, response, body) {
-                        if (!error && response.statusCode == 200) {
-                            console.log('Its working '+url);
-                        }
-
-
-                    
-                });
-
-                 }
+                     }
 
             });
 
